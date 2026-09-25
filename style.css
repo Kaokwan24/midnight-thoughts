@@ -1,0 +1,96 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f1ea;
+    color: #333;
+}
+
+.container {
+    width: min(700px, 92%);
+    margin: 60px auto;
+    background: white;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+    margin: 0 0 8px;
+    text-align: center;
+}
+
+.subtitle {
+    margin: 0 0 24px;
+    text-align: center;
+    color: #777;
+}
+
+.form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.form input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+button {
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+    background: #333;
+    color: white;
+}
+
+.filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.filter {
+    background: #eee;
+    color: #444;
+}
+
+.filter.active {
+    background: #333;
+    color: white;
+}
+
+.thought-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.thought {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.thought-text {
+    flex: 1;
+}
+
+.thought.done .thought-text {
+    text-decoration: line-through;
+    color: #999;
+}
+
+.delete {
+    background: #c94c4c;
+}
