@@ -52,7 +52,6 @@ function renderThoughts(thoughts) {
         li.appendChild(text);
         li.appendChild(toggleButton);
         li.appendChild(deleteButton);
-
         thoughtList.appendChild(li);
     });
 }
