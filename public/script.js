@@ -4,22 +4,59 @@ const thoughtList = document.getElementById('thoughtList');
 const filterButtons = document.querySelectorAll('[data-filter]');
 
 let currentFilter = 'all';
+const isGitHubPages = window.location.hostname.endsWith('github.io');
+const storageKey = 'midnight-thoughts';
+
+const defaultThoughts = [
+    { id: 1, text: 'ทำไมแมวถึงชอบกล่อง', done: false },
+    { id: 2, text: 'ถ้าฝนตกบนดวงจันทร์จะเป็นยังไง', done: false },
+    { id: 3, text: 'อยากรู้ว่าปลาทะเลเคยเบื่อทะเลไหม', done: true },
+    { id: 4, text: 'ตีสองแล้วทำไมยังไม่นอน', done: false }
+];
+
+function getLocalThoughts() {
+    const saved = localStorage.getItem(storageKey);
+
+    if (saved) {
+        return JSON.parse(saved);
+    }
+
+    localStorage.setItem(storageKey, JSON.stringify(defaultThoughts));
+    return [...defaultThoughts];
+}
+
+function saveLocalThoughts(thoughts) {
+    localStorage.setItem(storageKey, JSON.stringify(thoughts));
+}
 
 async function loadThoughts() {
-    let url = '/api/thoughts';
+    let thoughts;
 
-    if (currentFilter !== 'all') {
-        url += `?done=${currentFilter}`;
+    if (isGitHubPages) {
+        thoughts = getLocalThoughts();
+
+        if (currentFilter !== 'all') {
+            thoughts = thoughts.filter(
+                thought => String(thought.done) === currentFilter
+            );
+        }
+    } else {
+        let url = '/api/thoughts';
+
+        if (currentFilter !== 'all') {
+            url += `?done=${currentFilter}`;
+        }
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            alert('โหลดข้อมูลไม่สำเร็จ');
+            return;
+        }
+
+        thoughts = await response.json();
     }
 
-    const response = await fetch(url);
-
-    if (!response.ok) {
-        alert('โหลดข้อมูลไม่สำเร็จ');
-        return;
-    }
-
-    const thoughts = await response.json();
     renderThoughts(thoughts);
 }
 
@@ -65,17 +102,32 @@ thoughtForm.addEventListener('submit', async (event) => {
         return;
     }
 
-    const response = await fetch('/api/thoughts', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ text: text })
-    });
+    if (isGitHubPages) {
+        const thoughts = getLocalThoughts();
+        const nextId = thoughts.length
+            ? Math.max(...thoughts.map(thought => thought.id)) + 1
+            : 1;
 
-    if (!response.ok) {
-        alert('เพิ่มรายการไม่สำเร็จ');
-        return;
+        thoughts.push({
+            id: nextId,
+            text: text,
+            done: false
+        });
+
+        saveLocalThoughts(thoughts);
+    } else {
+        const response = await fetch('/api/thoughts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text: text })
+        });
+
+        if (!response.ok) {
+            alert('เพิ่มรายการไม่สำเร็จ');
+            return;
+        }
     }
 
     thoughtInput.value = '';
@@ -83,26 +135,41 @@ thoughtForm.addEventListener('submit', async (event) => {
 });
 
 async function toggleThought(id) {
-    const response = await fetch(`/api/thoughts/${id}`, {
-        method: 'PATCH'
-    });
+    if (isGitHubPages) {
+        const thoughts = getLocalThoughts();
+        const thought = thoughts.find(item => item.id === id);
 
-    if (!response.ok) {
-        alert('เปลี่ยนสถานะไม่สำเร็จ');
-        return;
+        if (thought) {
+            thought.done = !thought.done;
+            saveLocalThoughts(thoughts);
+        }
+    } else {
+        const response = await fetch(`/api/thoughts/${id}`, {
+            method: 'PATCH'
+        });
+
+        if (!response.ok) {
+            alert('เปลี่ยนสถานะไม่สำเร็จ');
+            return;
+        }
     }
 
     await loadThoughts();
 }
 
 async function deleteThought(id) {
-    const response = await fetch(`/api/thoughts/${id}`, {
-        method: 'DELETE'
-    });
+    if (isGitHubPages) {
+        const thoughts = getLocalThoughts().filter(item => item.id !== id);
+        saveLocalThoughts(thoughts);
+    } else {
+        const response = await fetch(`/api/thoughts/${id}`, {
+            method: 'DELETE'
+        });
 
-    if (!response.ok && response.status !== 204) {
-        alert('ลบรายการไม่สำเร็จ');
-        return;
+        if (!response.ok && response.status !== 204) {
+            alert('ลบรายการไม่สำเร็จ');
+            return;
+        }
     }
 
     await loadThoughts();
