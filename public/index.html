@@ -11,13 +11,8 @@
         <h1>Midnight Thoughts 🌙</h1>
         <p class="subtitle">ความคิดแปลก ๆ ที่ชอบโผล่มาตอนดึก</p>
 
-        <form id="thoughtForm" class="form">
-            <input
-                id="thoughtInput"
-                type="text"
-                placeholder="พิมพ์ความคิดของคุณ..."
-                autocomplete="off"
-            >
+        <form id="thoughtForm">
+            <input id="thoughtInput" type="text" placeholder="พิมพ์ความคิดของคุณ..." autocomplete="off">
             <button type="submit">เพิ่ม</button>
         </form>
 
@@ -27,7 +22,7 @@
             <button type="button" class="filter" data-filter="true">เสร็จแล้ว</button>
         </div>
 
-        <ul id="thoughtList" class="thought-list"></ul>
+        <ul id="thoughtList"></ul>
     </main>
 
     <script src="script.js"></script>
