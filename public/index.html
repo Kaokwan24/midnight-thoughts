@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midnight Thoughts</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="container">
+        <h1>Midnight Thoughts 🌙</h1>
+        <p class="subtitle">ความคิดแปลก ๆ ที่ชอบโผล่มาตอนดึก</p>
+
+        <form id="thoughtForm" class="form">
+            <input
+                id="thoughtInput"
+                type="text"
+                placeholder="พิมพ์ความคิดของคุณ..."
+                autocomplete="off"
+            >
+            <button type="submit">เพิ่ม</button>
+        </form>
+
+        <div class="filters">
+            <button type="button" class="filter active" data-filter="all">ทั้งหมด</button>
+            <button type="button" class="filter" data-filter="false">ยังไม่เสร็จ</button>
+            <button type="button" class="filter" data-filter="true">เสร็จแล้ว</button>
+        </div>
+
+        <ul id="thoughtList" class="thought-list"></ul>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
